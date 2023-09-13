@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('./partials/head.ejs') %>
+    <body>
+        
+        <section>
+            <h2 style="text-align:center;">Welcome to WCA Hub <input id="searchbar" onkeyup="search_projects()" type="text"
+                name="search" placeholder="Search projects.."></h2>
+                <img src="book01.jpeg" alt="Pile of Books" style="width:1400px;height:200px;">
+                <div class="upload content">        
+                <h5>Recent Research and Projects</h5>
+                
+                    
+                <table name="Recent-Upload">
+                    <tr>
+                      <th>username</th>
+                      <th>Date</th>
+                      <th>Author's Name</th>
+                      <th>Project Title</th>
+                      <th>File Uploaded</th>
+                      <th>Remark</th>
+                    </tr>
+                    <% projects.forEach(function(project) { %>
+                      <tr>
+                        <td><%= project.username %></td>
+                        <td><%= project.date_created.toISOString().split('T')[0] %></td>
+                        <td><%= project.author %></td>
+                        <td><%= project.title %></td>
+                        <td><a href="<%= project.file_path %>">Download</a></td>
+                        <td><%= project.remark %></td>
+                      </tr>
+                    <% }); %>
+                  </table>
+                    
+                        <br>
+                        <br>
+                        <br>
+                        <h4>Kindly Upload Research Project file(s) here!</h4>
+                        <form action="/upload" method = "POST" enctype="multipart/form-data">
+                            <fieldset> 
+                                <legend>Choose the file to upload and fill in your details for reference purpose</legend>
+                                
+                                <label for="browse">Click to upload a file/folder</label>
+                                <input type="file" onchange="showFile(this)" id="file" name="file">
+                                <script>
+                                    function showFile(input) {
+                                    let file = input.files[0];
+
+                                    alert(`File name: ${file.name}`); 
+                                    }
+                                </script>
+                                <label for="username">Username</label>
+                                <input type="text" id="username" name ="username" required>
+                                <label for="date">Date</label>
+                                <input type="text" id="date_created" name="date_created">
+                                <br>
+                                <br>
+                                <label for="author">Author's Name</label>
+                                <input type="text" id="author" name ="author" required>
+                                
+                                <label for="title">Project Title</label>
+                                <input type="text" id ="title" name ="title" required>
+                                <label for="remark">Remark</label>
+                                <textarea id = "remark" name="remark" required></textarea>
+                                    <br><br>
+                            <label for="upload" >Click the next button to Upload your file(s) </label>
+                            <input type="submit" value ="upload" id ="upload">
+                               
+                        </fieldset> 
+                        </form>
+                    
+                        <h3 style="text-align: center";> Thank you for your contribution!</h3>
+                        
+        </section>
+        
+       <%- include('./partials/footer.ejs') %>
+    </body>
+</html>
