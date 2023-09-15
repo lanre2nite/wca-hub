@@ -6,6 +6,7 @@ const multer = require('multer');
 const upload = multer({ dest: './models/uploads/' });
 
 const app = express();
+const port = process.env.PORT || 3000;
 
 //connecting to mongodb
 const dbURI = "mongodb+srv://olabagy:Wca123@wcahub.qfpl5gm.mongodb.net/?retryWrites=true&w=majority";
@@ -168,8 +169,4 @@ app.get('/login.html', (req, res) => {
 
 app.use((req, res) =>{
     res.status(404).render('404', { title: '404'});
-});
-
-app.listen(port, ip, () => {
-  console.log(`Server running at http://${ip}:${port}/`);
 });
