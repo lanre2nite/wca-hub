@@ -13,13 +13,14 @@ app.set('view engine', 'ejs'); // using view engines
 //app.set('views', 'templates'); to specify a different folder for the ejs views
 
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then((result) => console.log('connected to wcahub databases', app.listen(3001)))
+  .then((result) => console.log('connected to wcahub databases', app.listen(3000)))
   .catch(err => console.log(err));
 
 
 // Middleware for static files
 app.use(express.static('public'));
 app.use(morgan('dev'));
+
 app.use((req, res, next) => {
     res.locals.path = req.path;
     next();
