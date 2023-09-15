@@ -20,6 +20,7 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
 // Middleware for static files
 app.use(express.static('public'));
 app.use(morgan('dev'));
+
 app.use((req, res, next) => {
     res.locals.path = req.path;
     next();
