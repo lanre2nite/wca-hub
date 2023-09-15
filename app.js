@@ -13,7 +13,7 @@ app.set('view engine', 'ejs'); // using view engines
 //app.set('views', 'templates'); to specify a different folder for the ejs views
 
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then((result) => console.log('connected to wcahub databases', app.listen(3001)))
+  .then((result) => console.log('connected to wcahub databases', app.listen(3000)))
   .catch(err => console.log(err));
 
 
@@ -167,4 +167,8 @@ app.get('/login.html', (req, res) => {
 
 app.use((req, res) =>{
     res.status(404).render('404', { title: '404'});
+});
+
+app.listen(port, ip, () => {
+  console.log(`Server running at http://${ip}:${port}/`);
 });
