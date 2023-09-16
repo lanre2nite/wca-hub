@@ -1,10 +1,10 @@
 const express = require('express');
-const morgan = require('morgan');
-const mongoose = require('mongoose');
+const morgan = require('morgan'); //a package using middleware function for more info on req and res processes
+const mongoose = require('mongoose'); //a module or package for mongodb database
 const Upload = require('./models/upload');
-const multer = require('multer');
-const upload = multer({ dest: './models/uploads/' });
-
+const multer = require('multer'); //a package that handles info & file storage
+const upload = multer({ dest: './models/uploads/' }); // specifying path for multer storage
+const path = require('path')
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -19,6 +19,7 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
 
 
 // Middleware for static files
+app.use('/models/uploads', express.static('models/uploads'));
 app.use(express.static('public'));
 app.use(morgan('dev'));
 
@@ -81,7 +82,77 @@ app.post('/upload', upload.single('file'), (req, res) => {
       });
 });
 
-app.post('/SignIn', (req, res) => {
+app.get('/models/uploads/:file', function(req, res){
+  // Find the document by file path
+  Project.findOne({file_path: req.params.file})
+    .then(project => {
+      if (project) {
+        // Resolve the absolute path of the file
+        let filePath = path.resolve(project.file_path);
+        
+        // Set the headers to force file download
+        res.setHeader('Content-Disposition', 'attachment; filename=' + path.basename(filePath));
+        
+        // Send the file to the client
+        res.sendFile(filePath);
+      } else {
+        // Handle the case where no document was found
+        res.status(404).send('No document found with that file path');
+      }
+    })
+    .catch(err => {
+      console.log(err);
+    });
+});
+/* app.get('/models/uploads/:file', function(req, res){
+  // Find the document by file path
+  Project.findOne({file_path: req.params.file})
+    .then(project => {
+      if (project) {
+        // Resolve the absolute path of the file
+        let filePath = path.resolve(project.file_path);
+        
+        // Set the headers to force file download
+        res.setHeader('Content-Disposition', 'attachment; filename=' + path.basename(filePath));
+        
+        // Send the file to the client
+        res.sendFile(filePath);
+      } else {
+        // Handle the case where no document was found
+        res.status(404).send('No document found with that file path');
+      }
+    })
+    .catch(err => {
+      console.log(err);
+    });
+});
+
+app.get('/models/uploads/:file', function(req, res){
+  // Find the document by id
+  Project.findById(req.params.id)
+    .then(project => {
+      if (project) {
+        // Resolve the absolute path of the file
+        let filePath = path.resolve(project.file_path);
+        
+        // Set the headers to force file download
+        res.setHeader('Content-Disposition', 'attachment; filename=' + path.basename(filePath));
+        
+        // Send the file to the client
+        res.sendFile(filePath);
+      } else {
+        // Handle the case where no document was found
+        res.status(404).send('No document found with that id');
+      }
+    })
+    .catch(err => {
+      console.log(err);
+    });
+
+});
+*/
+//define a route for user's sign in
+app.post('/SignIn', (req, res) => { 
     const username = req.body.username;
     const password = req.body.password; // You should hash the password before comparing it
   
@@ -92,10 +163,10 @@ app.post('/SignIn', (req, res) => {
           if (user.password === password) { // In a real-world application, compare hashed passwords
             res.redirect('/'); // Redirect to home page or dashboard
           } else {
-            res.send('Incorrect password');
+            res.send('Incorrect password, navigate to the previous page to input the correct user details');
                 }
         } else {
-          res.send('User not found');
+          res.send('User not found, navigate to the previous page to input the correct user details or signup');
           res.redirect('/');
           
         }
@@ -105,7 +176,7 @@ app.post('/SignIn', (req, res) => {
       });
   });
 
-// Define a route for sign up
+// Defining a route for sign up
 app.post('/SignUp', (req, res) => {
     const newUser = new User({
       fname: req.body.fname,
@@ -113,7 +184,7 @@ app.post('/SignUp', (req, res) => {
       gender: req.body.gender,
       username: req.body.username,
       email: req.body.email,
-      password: req.body.password // You should hash the password before storing it
+      password: req.body.password 
     });
   
     newUser.save()
@@ -137,8 +208,6 @@ app.get('/', (req, res) => {
 });
 
 app.post('/upload', upload.single('file'), (req, res) => {
-    // Your existing code...
-  
     newProject.save()
       .then((result) => {
         console.log(result);
