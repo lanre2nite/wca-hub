@@ -104,54 +104,6 @@ app.get('/models/uploads/:file', function(req, res){
       console.log(err);
     });
 });
-/* app.get('/models/uploads/:file', function(req, res){
-  // Find the document by file path
-  Project.findOne({file_path: req.params.file})
-    .then(project => {
-      if (project) {
-        // Resolve the absolute path of the file
-        let filePath = path.resolve(project.file_path);
-        
-        // Set the headers to force file download
-        res.setHeader('Content-Disposition', 'attachment; filename=' + path.basename(filePath));
-        
-        // Send the file to the client
-        res.sendFile(filePath);
-      } else {
-        // Handle the case where no document was found
-        res.status(404).send('No document found with that file path');
-      }
-    })
-    .catch(err => {
-      console.log(err);
-    });
-});
-
-app.get('/models/uploads/:file', function(req, res){
-  // Find the document by id
-  Project.findById(req.params.id)
-    .then(project => {
-      if (project) {
-        // Resolve the absolute path of the file
-        let filePath = path.resolve(project.file_path);
-        
-        // Set the headers to force file download
-        res.setHeader('Content-Disposition', 'attachment; filename=' + path.basename(filePath));
-        
-        // Send the file to the client
-        res.sendFile(filePath);
-      } else {
-        // Handle the case where no document was found
-        res.status(404).send('No document found with that id');
-      }
-    })
-    .catch(err => {
-      console.log(err);
-    });
-
-});
-*/
-//define a route for user's sign in
 app.post('/SignIn', (req, res) => { 
     const username = req.body.username;
     const password = req.body.password; // You should hash the password before comparing it
@@ -196,8 +148,38 @@ app.post('/SignUp', (req, res) => {
       });
   });
   
-
-app.get('/', (req, res) => {
+//search for projects
+  app.get('/search', function(req, res){
+    // Get the search term from the query string
+    let searchTerm = req.query.q;
+  
+    // Find documents that match the search term
+    Project.find({$text: {$search: searchTerm}})
+      .then(projects => {
+        // Send the matching projects to the client
+        res.json(projects);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  });
+// search uploaded project
+  function search_projects() {
+    // Get the search term from the input field
+    let searchTerm = document.getElementById('searchbar').value;
+  
+    // Send a GET request to /search with the search term as a query parameter
+    fetch('/search?q=' + encodeURIComponent(searchTerm))
+      .then(response => response.json())
+      .then(projects => {
+        // Handle the matching projects
+        console.log(projects);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+  app.get('/', (req, res) => {
     Project.find()
       .then((projects) => {
         res.render('index', { title: 'WCA-HUB', projects: projects });
