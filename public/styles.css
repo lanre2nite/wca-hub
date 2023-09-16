@@ -15,7 +15,7 @@ header {
         }
         
         th {
-            height: 30px;
+            height: 50px;
         }
         
         td {
@@ -83,6 +83,9 @@ p {
     font-family: courier;
    font-size: 120%;
   }
-             
+  h3 {
+    color: rgb(197, 210, 18);
+            font-family: verdana;
+          
      
 </style>
