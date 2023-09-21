@@ -5,7 +5,6 @@ const multer = require('multer'); //a package that handles info & file storage
 const upload = multer({ dest: './models/uploads/' }); // specifying path for multer storage
 const path = require('path')
 const app = express();
-const port = process.env.PORT || 3000;
 
 //connecting to mongodb
 const dbURI = "mongodb+srv://olabagy:Wca123@wcahub.qfpl5gm.mongodb.net/?retryWrites=true&w=majority";
